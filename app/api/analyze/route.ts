@@ -2,6 +2,8 @@ import { NextRequest } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { detectPlatform } from "@/lib/platforms";
 
+export const maxDuration = 30; // Vercel Pro 才能超過 10 秒，免費版最多 10 秒
+
 function decodeHtmlEntities(str: string): string {
   return str
     .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
@@ -28,7 +30,7 @@ async function fetchOgData(url: string) {
         "User-Agent":
           "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
       },
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(5000),
     });
     const html = await res.text();
 
