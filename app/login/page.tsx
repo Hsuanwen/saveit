@@ -101,14 +101,6 @@ export default function LoginPage() {
           </button>
         </div>
 
-        {mode === "login" && (
-          <p className="text-center text-white/30 text-xs mt-6">
-            還沒有帳號？
-            <button onClick={() => setMode("register")} className="text-indigo-400 ml-1">
-              建立帳號
-            </button>
-          </p>
-        )}
       </div>
     </div>
   );
