@@ -190,6 +190,7 @@ export default function Home() {
 
 function ItemCard({ item, onDelete }: { item: Item; onDelete: (id: string) => void }) {
   const platformColor = PLATFORM_COLORS[item.platform] || PLATFORM_COLORS["網頁"];
+  const [confirm, setConfirm] = useState(false);
 
   const timeStr = new Date(item.created_at).toLocaleTimeString("zh-TW", {
     hour: "2-digit",
@@ -197,6 +198,37 @@ function ItemCard({ item, onDelete }: { item: Item; onDelete: (id: string) => vo
   });
 
   return (
+    <>
+      {/* 確認刪除 Modal */}
+      {confirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-6" onClick={() => setConfirm(false)}>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div
+            className="relative bg-[#1c1c2e] border border-white/10 rounded-2xl p-6 w-full max-w-sm"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-white font-semibold mb-1">確認刪除？</h3>
+            <p className="text-white/40 text-sm mb-5 line-clamp-2">
+              「{item.title || item.url}」刪除後無法復原。
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConfirm(false)}
+                className="flex-1 bg-white/5 hover:bg-white/10 text-white/60 py-2.5 rounded-xl text-sm transition-colors"
+              >
+                取消
+              </button>
+              <button
+                onClick={() => { onDelete(item.id); setConfirm(false); }}
+                className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2.5 rounded-xl text-sm font-medium transition-colors"
+              >
+                刪除
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-colors">
       {item.thumbnail && (
         <img
@@ -219,7 +251,7 @@ function ItemCard({ item, onDelete }: { item: Item; onDelete: (id: string) => vo
           <div className="flex items-center gap-2 flex-shrink-0">
             <span className="text-white/20 text-xs">{timeStr}</span>
             <button
-              onClick={() => onDelete(item.id)}
+              onClick={() => setConfirm(true)}
               className="text-white/20 hover:text-red-400 transition-colors text-lg leading-none"
             >
               ×
@@ -271,5 +303,6 @@ function ItemCard({ item, onDelete }: { item: Item; onDelete: (id: string) => vo
         </div>
       </div>
     </div>
+    </>
   );
 }
