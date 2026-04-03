@@ -106,7 +106,7 @@ export default function Home() {
             </button>
             <Link
               href="/add"
-              className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+              className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
             >
               + 新增
             </Link>
@@ -118,7 +118,7 @@ export default function Home() {
           placeholder="搜尋收藏..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none focus:border-indigo-500 mb-3"
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none focus:border-sky-500 mb-3"
         />
 
         <div className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden">
@@ -128,7 +128,7 @@ export default function Home() {
               onClick={() => setFilter(cat)}
               className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
                 filter === cat
-                  ? "bg-indigo-500 text-white"
+                  ? "bg-sky-500 text-white"
                   : "bg-white/5 text-white/50 hover:bg-white/10"
               }`}
             >
@@ -268,7 +268,7 @@ function ItemCard({ item, onDelete }: { item: Item; onDelete: (id: string) => vo
         )}
 
         {item.note && (
-          <p className="text-indigo-300 text-xs italic mb-3">💬 {item.note}</p>
+          <p className="text-sky-300 text-xs italic mb-3">💬 {item.note}</p>
         )}
 
         {item.tags && item.tags.length > 0 && (
@@ -286,7 +286,7 @@ function ItemCard({ item, onDelete }: { item: Item; onDelete: (id: string) => vo
             href={item.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-indigo-400 text-xs hover:text-indigo-300 transition-colors"
+            className="text-sky-400 text-xs hover:text-sky-300 transition-colors"
           >
             開啟原始連結 →
           </a>

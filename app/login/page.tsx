@@ -49,7 +49,7 @@ export default function LoginPage() {
               key={m}
               onClick={() => { setMode(m); setError(""); }}
               className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-                mode === m ? "bg-indigo-500 text-white" : "text-white/40 hover:text-white/60"
+                mode === m ? "bg-sky-500 text-white" : "text-white/40 hover:text-white/60"
               }`}
             >
               {m === "login" ? "登入" : "建立帳號"}
@@ -69,7 +69,7 @@ export default function LoginPage() {
               placeholder="只限英文和數字"
               autoCapitalize="none"
               autoCorrect="off"
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-indigo-500"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-sky-500"
             />
           </div>
           <div>
@@ -80,7 +80,7 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && submit()}
               placeholder="只限英文和數字"
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-indigo-500"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-sky-500"
             />
           </div>
 
@@ -93,7 +93,7 @@ export default function LoginPage() {
           <button
             onClick={submit}
             disabled={loading}
-            className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:opacity-40 text-white py-3.5 rounded-xl font-medium transition-colors mt-2"
+            className="w-full bg-sky-500 hover:bg-sky-600 disabled:opacity-40 text-white py-3.5 rounded-xl font-medium transition-colors mt-2"
           >
             {loading ? "處理中..." : mode === "login" ? "登入" : "建立帳號"}
           </button>

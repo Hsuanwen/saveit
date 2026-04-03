@@ -104,12 +104,12 @@ export default function AddPage() {
             onChange={(e) => setUrl(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && analyze()}
             placeholder="https://..."
-            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-indigo-500"
+            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-sky-500"
           />
           <button
             onClick={analyze}
             disabled={loading || !url.trim()}
-            className="bg-indigo-500 hover:bg-indigo-600 disabled:opacity-40 disabled:cursor-not-allowed text-white px-4 py-3 rounded-xl text-sm font-medium transition-colors"
+            className="bg-sky-500 hover:bg-sky-600 disabled:opacity-40 disabled:cursor-not-allowed text-white px-4 py-3 rounded-xl text-sm font-medium transition-colors"
           >
             {loading ? "分析中..." : "分析"}
           </button>
@@ -176,7 +176,7 @@ export default function AddPage() {
                   onClick={() => setCategory(cat)}
                   className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
                     category === cat
-                      ? "bg-indigo-500 text-white"
+                      ? "bg-sky-500 text-white"
                       : "bg-white/5 text-white/50 hover:bg-white/10"
                   }`}
                 >
@@ -194,7 +194,7 @@ export default function AddPage() {
               onChange={(e) => setNote(e.target.value)}
               placeholder="為什麼想存這個？有什麼想法？"
               rows={3}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-indigo-500 resize-none"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-sky-500 resize-none"
             />
           </div>
 
@@ -202,7 +202,7 @@ export default function AddPage() {
           <button
             onClick={save}
             disabled={saving}
-            className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:opacity-40 text-white py-3.5 rounded-xl font-medium transition-colors"
+            className="w-full bg-sky-500 hover:bg-sky-600 disabled:opacity-40 text-white py-3.5 rounded-xl font-medium transition-colors"
           >
             {saving ? "儲存中..." : "儲存到收藏庫"}
           </button>

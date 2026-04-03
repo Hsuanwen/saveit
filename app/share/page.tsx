@@ -61,7 +61,7 @@ function ShareContent() {
       <div className="flex flex-col items-center justify-center h-screen gap-4 px-4">
         <span className="text-4xl">😕</span>
         <p className="text-white/50 text-sm text-center">{error}</p>
-        <button onClick={() => router.push("/")} className="text-indigo-400 text-sm">
+        <button onClick={() => router.push("/")} className="text-sky-400 text-sm">
           回到首頁
         </button>
       </div>
@@ -71,7 +71,7 @@ function ShareContent() {
   if (!analysis) {
     return (
       <div className="flex flex-col items-center justify-center h-screen gap-3">
-        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
         <p className="text-white/40 text-sm">正在分析內容...</p>
       </div>
     );
@@ -113,7 +113,7 @@ function ShareContent() {
                 key={cat}
                 onClick={() => setCategory(cat)}
                 className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                  category === cat ? "bg-indigo-500 text-white" : "bg-white/5 text-white/50"
+                  category === cat ? "bg-sky-500 text-white" : "bg-white/5 text-white/50"
                 }`}
               >
                 {CATEGORY_ICONS[cat]} {cat}
@@ -129,14 +129,14 @@ function ShareContent() {
             onChange={(e) => setNote(e.target.value)}
             placeholder="為什麼想存這個？"
             rows={2}
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-indigo-500 resize-none"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-sky-500 resize-none"
           />
         </div>
 
         <button
           onClick={save}
           disabled={saving}
-          className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:opacity-40 text-white py-3.5 rounded-xl font-medium"
+          className="w-full bg-sky-500 hover:bg-sky-600 disabled:opacity-40 text-white py-3.5 rounded-xl font-medium"
         >
           {saving ? "儲存中..." : "儲存到收藏庫"}
         </button>
@@ -149,7 +149,7 @@ export default function SharePage() {
   return (
     <Suspense fallback={
       <div className="flex items-center justify-center h-screen">
-        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
       </div>
     }>
       <ShareContent />
