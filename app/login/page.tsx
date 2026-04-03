@@ -37,7 +37,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
-          <img src="/icon.png" alt="SaveIt" className="w-16 h-16 rounded-2xl mx-auto mb-4 object-cover" />
+          <img src="/icon-192.png" alt="SaveIt" className="w-16 h-16 rounded-2xl mx-auto mb-4 object-cover" />
           <h1 className="text-2xl font-bold text-white">SaveIt</h1>
           <p className="text-white/40 text-sm mt-1">你的社群內容收藏庫</p>
         </div>

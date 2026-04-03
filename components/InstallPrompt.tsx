@@ -46,7 +46,7 @@ export default function InstallPrompt() {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 p-4">
       <div className="max-w-2xl mx-auto bg-[#1a1a2e] border border-indigo-500/30 rounded-2xl p-4 flex items-center gap-4 shadow-2xl">
-        <img src="/icon.png" alt="SaveIt" className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
+        <img src="/icon-192.png" alt="SaveIt" className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="text-white text-sm font-medium">安裝 SaveIt 到主畫面</p>
           <p className="text-white/40 text-xs">讓分享功能出現在 IG 的分享選單</p>
