@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Item } from "@/lib/supabase";
 import { PLATFORM_COLORS, CATEGORY_ICONS, CATEGORIES } from "@/lib/platforms";
@@ -32,18 +33,26 @@ function getDateKey(dateStr: string): string {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("全部");
   const [search, setSearch] = useState("");
   const [collapsedDates, setCollapsedDates] = useState<Set<string>>(new Set());
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
+    fetch("/api/auth/me").then((r) => r.json()).then((u) => { if (u?.username) setUsername(u.username); });
     fetch("/api/items")
       .then((r) => r.json())
       .then((data) => { setItems(Array.isArray(data) ? data : []); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
+
+  async function logout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/login");
+  }
 
   async function deleteItem(id: string) {
     await fetch(`/api/items/${id}`, { method: "DELETE" });
@@ -84,13 +93,24 @@ export default function Home() {
     <div className="max-w-2xl mx-auto px-4 pb-24">
       <div className="sticky top-0 bg-[#0f0f0f]/95 backdrop-blur pt-6 pb-3 z-10">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold text-white">SaveIt</h1>
-          <Link
-            href="/add"
-            className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-          >
-            + 新增
-          </Link>
+          <div>
+            <h1 className="text-2xl font-bold text-white">SaveIt</h1>
+            {username && <p className="text-white/30 text-xs mt-0.5">@{username}</p>}
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={logout}
+              className="text-white/30 hover:text-white/60 text-xs px-3 py-2 rounded-full transition-colors"
+            >
+              登出
+            </button>
+            <Link
+              href="/add"
+              className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+            >
+              + 新增
+            </Link>
+          </div>
         </div>
 
         <input
