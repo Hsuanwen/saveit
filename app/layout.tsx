@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="zh-TW" className={geist.variable}>
       <head>
-        <link rel="apple-touch-icon" href="/api/icon?size=192" />
+        <link rel="apple-touch-icon" href="/icon.png" />
         <script
           dangerouslySetInnerHTML={{
             __html: `if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');`,
