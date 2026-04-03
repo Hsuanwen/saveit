@@ -24,6 +24,23 @@ export default function AddPage() {
   const [note, setNote] = useState("");
   const [category, setCategory] = useState("");
   const [error, setError] = useState("");
+  const [clipboardMsg, setClipboardMsg] = useState("");
+
+  async function pasteFromClipboard() {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text.startsWith("http://") || text.startsWith("https://")) {
+        setUrl(text);
+        setClipboardMsg("");
+      } else {
+        setClipboardMsg("剪貼簿內容不是網址，請先複製連結");
+        setTimeout(() => setClipboardMsg(""), 3000);
+      }
+    } catch {
+      setClipboardMsg("請手動長按輸入框貼上");
+      setTimeout(() => setClipboardMsg(""), 3000);
+    }
+  }
 
   async function analyze() {
     if (!url.trim()) return;
@@ -73,10 +90,14 @@ export default function AddPage() {
         <h1 className="text-xl font-bold text-white">新增收藏</h1>
       </div>
 
+      {/* 使用說明 */}
+      <div className="bg-white/3 border border-white/8 rounded-xl px-4 py-3 mb-4 text-xs text-white/40 leading-relaxed">
+        在 IG / Threads / YouTube 點「<span className="text-white/60">複製連結</span>」，回到這裡貼上 👇
+      </div>
+
       {/* URL Input */}
       <div className="mb-4">
-        <label className="text-xs text-white/40 mb-2 block">貼上網址</label>
-        <div className="flex gap-2">
+        <div className="flex gap-2 mb-2">
           <input
             type="url"
             value={url}
@@ -93,6 +114,17 @@ export default function AddPage() {
             {loading ? "分析中..." : "分析"}
           </button>
         </div>
+
+        {/* 剪貼簿按鈕 */}
+        <button
+          onClick={pasteFromClipboard}
+          className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/8 border border-white/10 rounded-xl py-2.5 text-sm text-white/50 hover:text-white/70 transition-colors"
+        >
+          📋 從剪貼簿貼上連結
+        </button>
+        {clipboardMsg && (
+          <p className="text-yellow-400 text-xs mt-1.5 text-center">{clipboardMsg}</p>
+        )}
         {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
       </div>
 
