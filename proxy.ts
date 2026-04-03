@@ -11,7 +11,7 @@ const PUBLIC_PATHS = [
   "/sw.js",
 ];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 放行公開路徑
@@ -27,8 +27,7 @@ export function middleware(request: NextRequest) {
   // 檢查 session cookie
   const sessionId = request.cookies.get(SESSION_COOKIE)?.value;
   if (!sessionId) {
-    const loginUrl = new URL("/login", request.url);
-    return NextResponse.redirect(loginUrl);
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   return NextResponse.next();
