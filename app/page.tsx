@@ -191,6 +191,7 @@ export default function Home() {
 function ItemCard({ item, onDelete }: { item: Item; onDelete: (id: string) => void }) {
   const platformColor = PLATFORM_COLORS[item.platform] || PLATFORM_COLORS["網頁"];
   const [confirm, setConfirm] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   const timeStr = new Date(item.created_at).toLocaleTimeString("zh-TW", {
     hour: "2-digit",
@@ -235,6 +236,8 @@ function ItemCard({ item, onDelete }: { item: Item; onDelete: (id: string) => vo
           src={item.thumbnail}
           alt={item.title}
           className="w-full h-44 object-cover"
+          style={imgLoaded ? undefined : { display: "none" }}
+          onLoad={() => setImgLoaded(true)}
           onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
         />
       )}
