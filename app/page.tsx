@@ -40,6 +40,7 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [collapsedDates, setCollapsedDates] = useState<Set<string>>(new Set());
   const [username, setUsername] = useState("");
+  const [confirmLogout, setConfirmLogout] = useState(false);
 
   useEffect(() => {
     fetch("/api/auth/me").then((r) => r.json()).then((u) => { if (u?.username) setUsername(u.username); });
@@ -77,7 +78,6 @@ export default function Home() {
     return matchCat && matchSearch;
   });
 
-  // 依日期分組（已按 created_at DESC 排序）
   const grouped = filtered.reduce<{ dateKey: string; label: string; items: Item[] }[]>((acc, item) => {
     const dateKey = getDateKey(item.created_at);
     const existing = acc.find((g) => g.dateKey === dateKey);
@@ -90,100 +90,193 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="max-w-2xl mx-auto px-4 pb-24">
-      <div className="sticky top-0 bg-[#0f0f0f]/95 backdrop-blur pt-6 pb-3 z-10">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-2xl font-bold text-white">SaveIt</h1>
-            {username && <p className="text-white/30 text-xs mt-0.5">@{username}</p>}
+    <div
+      className="min-h-screen"
+      style={{
+        background: "radial-gradient(ellipse at 70% 10%, #083a42 0%, transparent 50%), radial-gradient(ellipse at 15% 85%, #062d38 0%, transparent 45%), #030a0d",
+      }}
+    >
+      {confirmLogout && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-6" onClick={() => setConfirmLogout(false)}>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div
+            className="relative rounded-2xl p-6 w-full max-w-sm"
+            style={{
+              background: "rgba(3,15,20,0.95)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+              border: "1px solid rgba(255,255,255,0.10)",
+              boxShadow: "0 32px 64px rgba(0,0,0,0.6)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-white font-semibold mb-1">確定要登出？</h3>
+            <p className="text-white/40 text-sm mb-5">登出後需重新輸入帳號密碼。</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConfirmLogout(false)}
+                className="flex-1 text-white/60 py-2.5 rounded-xl text-sm transition-colors hover:text-white/80"
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
+              >
+                取消
+              </button>
+              <button
+                onClick={logout}
+                className="flex-1 text-white py-2.5 rounded-xl text-sm font-medium transition-colors"
+                style={{
+                  background: "linear-gradient(135deg, #0891b2, #06b6d4)",
+                  boxShadow: "0 0 16px rgba(6,182,212,0.3)",
+                }}
+              >
+                登出
+              </button>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={logout}
-              className="text-white/30 hover:text-white/60 text-xs px-3 py-2 rounded-full transition-colors"
-            >
-              登出
-            </button>
-            <Link
-              href="/add"
-              className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-            >
-              + 新增
-            </Link>
-          </div>
-        </div>
-
-        <input
-          type="text"
-          placeholder="搜尋收藏..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none focus:border-sky-500 mb-3"
-        />
-
-        <div className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden">
-          {["全部", ...CATEGORIES].map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setFilter(cat)}
-              className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                filter === cat
-                  ? "bg-sky-500 text-white"
-                  : "bg-white/5 text-white/50 hover:bg-white/10"
-              }`}
-            >
-              {cat !== "全部" && CATEGORY_ICONS[cat]} {cat}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {loading ? (
-        <div className="flex items-center justify-center h-64 text-white/30">載入中...</div>
-      ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-64 text-white/30 gap-3">
-          <span className="text-4xl">📭</span>
-          <p className="text-sm">
-            {items.length === 0 ? "還沒有收藏，點右上角新增吧！" : "沒有符合的結果"}
-          </p>
-        </div>
-      ) : (
-        <div className="mt-2 space-y-2">
-          {grouped.map(({ dateKey, label, items: groupItems }) => {
-            const isCollapsed = collapsedDates.has(dateKey);
-            return (
-              <div key={dateKey}>
-                {/* 日期標題列 */}
-                <button
-                  onClick={() => toggleDate(dateKey)}
-                  className="w-full flex items-center justify-between py-2 px-1 group"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-white/60 group-hover:text-white/80 transition-colors">
-                      {label}
-                    </span>
-                    <span className="text-xs text-white/25 bg-white/5 px-1.5 py-0.5 rounded-full">
-                      {groupItems.length}
-                    </span>
-                  </div>
-                  <span className={`text-white/30 text-xs transition-transform duration-200 ${isCollapsed ? "-rotate-90" : ""}`}>
-                    ▾
-                  </span>
-                </button>
-
-                {/* 摺疊內容 */}
-                {!isCollapsed && (
-                  <div className="grid gap-3">
-                    {groupItems.map((item) => (
-                      <ItemCard key={item.id} item={item} onDelete={deleteItem} />
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
         </div>
       )}
+      {/* 背景光暈裝飾 */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-64 opacity-15 blur-3xl"
+          style={{ background: "radial-gradient(ellipse, #22d3ee 0%, transparent 70%)" }}
+        />
+      </div>
+
+      <div className="relative max-w-2xl mx-auto px-4 pb-24">
+        {/* Sticky Header */}
+        <div
+          className="sticky top-0 pt-6 pb-3 z-10"
+          style={{
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            background: "rgba(3,10,13,0.75)",
+            borderBottom: "1px solid rgba(255,255,255,0.06)",
+          }}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-2xl font-bold text-white">我的收藏庫</h1>
+              {username && <p className="text-white/30 text-xs mt-0.5">@{username}</p>}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setConfirmLogout(true)}
+                className="text-white/60 hover:text-white text-xs px-3 py-2 rounded-full transition-all duration-200 hover:scale-105"
+                style={{
+                  background: "rgba(255,255,255,0.07)",
+                  border: "1px solid rgba(255,255,255,0.11)",
+                  backdropFilter: "blur(8px)",
+                  WebkitBackdropFilter: "blur(8px)",
+                }}
+              >
+                登出
+              </button>
+              <Link
+                href="/add"
+                className="text-white px-4 py-2 rounded-full text-sm font-medium transition-all"
+                style={{
+                  background: "linear-gradient(135deg, #0891b2, #06b6d4)",
+                  boxShadow: "0 0 16px rgba(6,182,212,0.35)",
+                }}
+              >
+                + 新增
+              </Link>
+            </div>
+          </div>
+
+          <input
+            type="text"
+            placeholder="搜尋收藏..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-200 mb-3"
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.10)",
+            }}
+            onFocus={(e) => {
+              e.target.style.border = "1px solid rgba(6,182,212,0.5)";
+              e.target.style.boxShadow = "0 0 0 3px rgba(6,182,212,0.10)";
+            }}
+            onBlur={(e) => {
+              e.target.style.border = "1px solid rgba(255,255,255,0.10)";
+              e.target.style.boxShadow = "none";
+            }}
+          />
+
+          <div className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden">
+            {["全部", ...CATEGORIES].map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setFilter(cat)}
+                className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200"
+                style={filter === cat ? {
+                  background: "linear-gradient(135deg, #0891b2, #06b6d4)",
+                  boxShadow: "0 0 12px rgba(6,182,212,0.3)",
+                  color: "white",
+                } : {
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  color: "rgba(255,255,255,0.5)",
+                }}
+              >
+                {cat !== "全部" && CATEGORY_ICONS[cat]} {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="flex items-center justify-center h-64 text-white/30">載入中...</div>
+        ) : filtered.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-64 text-white/30 gap-3">
+            <span className="text-4xl">📭</span>
+            <p className="text-sm">
+              {items.length === 0 ? "還沒有收藏，點右上角新增吧！" : "沒有符合的結果"}
+            </p>
+          </div>
+        ) : (
+          <div className="mt-2 space-y-2">
+            {grouped.map(({ dateKey, label, items: groupItems }) => {
+              const isCollapsed = collapsedDates.has(dateKey);
+              return (
+                <div key={dateKey}>
+                  <button
+                    onClick={() => toggleDate(dateKey)}
+                    className="w-full flex items-center justify-between py-2 px-1 group"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-white/60 group-hover:text-white/80 transition-colors">
+                        {label}
+                      </span>
+                      <span
+                        className="text-xs text-white/25 px-1.5 py-0.5 rounded-full"
+                        style={{ background: "rgba(255,255,255,0.05)" }}
+                      >
+                        {groupItems.length}
+                      </span>
+                    </div>
+                    <span
+                      className={`flex items-center justify-center w-6 h-6 rounded-full text-white/60 text-sm transition-all duration-200 ${isCollapsed ? "-rotate-90" : ""}`}
+                      style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }}
+                    >
+                      ▾
+                    </span>
+                  </button>
+
+                  {!isCollapsed && (
+                    <div className="grid gap-3">
+                      {groupItems.map((item) => (
+                        <ItemCard key={item.id} item={item} onDelete={deleteItem} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -205,7 +298,14 @@ function ItemCard({ item, onDelete }: { item: Item; onDelete: (id: string) => vo
         <div className="fixed inset-0 z-50 flex items-center justify-center px-6" onClick={() => setConfirm(false)}>
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div
-            className="relative bg-[#1c1c2e] border border-white/10 rounded-2xl p-6 w-full max-w-sm"
+            className="relative rounded-2xl p-6 w-full max-w-sm"
+            style={{
+              background: "rgba(10,30,35,0.95)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+              border: "1px solid rgba(255,255,255,0.10)",
+              boxShadow: "0 32px 64px rgba(0,0,0,0.6)",
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-white font-semibold mb-1">確認刪除？</h3>
@@ -215,7 +315,8 @@ function ItemCard({ item, onDelete }: { item: Item; onDelete: (id: string) => vo
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirm(false)}
-                className="flex-1 bg-white/5 hover:bg-white/10 text-white/60 py-2.5 rounded-xl text-sm transition-colors"
+                className="flex-1 text-white/60 py-2.5 rounded-xl text-sm transition-colors hover:text-white/80"
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
               >
                 取消
               </button>
@@ -230,86 +331,102 @@ function ItemCard({ item, onDelete }: { item: Item; onDelete: (id: string) => vo
         </div>
       )}
 
-    <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-colors">
-      {item.thumbnail && (
-        <div className={`w-full h-44 bg-white/[0.06] ${imgLoaded ? "" : "hidden"}`}>
-          <img
-            src={item.thumbnail}
-            alt={item.title}
-            className="w-full h-full object-cover"
-            onLoad={() => setImgLoaded(true)}
-            onError={(e) => {
-              const parent = (e.target as HTMLImageElement).parentElement;
-              if (parent) parent.style.display = "none";
-            }}
-          />
-        </div>
-      )}
-      <div className="p-4">
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <div className="flex gap-2 flex-wrap">
-            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${platformColor}`}>
-              {item.platform}
-            </span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-white/50">
-              {CATEGORY_ICONS[item.category]} {item.category}
-            </span>
+      <div
+        className="rounded-2xl overflow-hidden transition-all duration-200 hover:scale-[1.01]"
+        style={{
+          background: "rgba(255,255,255,0.04)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          border: "1px solid rgba(255,255,255,0.09)",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.07)",
+        }}
+      >
+        {item.thumbnail && (
+          <div className={`w-full h-44 bg-white/[0.04] ${imgLoaded ? "" : "hidden"}`}>
+            <img
+              src={item.thumbnail}
+              alt={item.title}
+              className="w-full h-full object-cover"
+              onLoad={() => setImgLoaded(true)}
+              onError={(e) => {
+                const parent = (e.target as HTMLImageElement).parentElement;
+                if (parent) parent.style.display = "none";
+              }}
+            />
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="text-white/20 text-xs">{timeStr}</span>
-            <button
-              onClick={() => setConfirm(true)}
-              className="text-white/20 hover:text-red-400 transition-colors text-lg leading-none"
-            >
-              ×
-            </button>
-          </div>
-        </div>
-
-        <h2 className="font-semibold text-white text-sm leading-snug mb-1 line-clamp-2">
-          {item.title || item.url}
-        </h2>
-
-        {item.summary && (
-          <p className="text-white/50 text-xs leading-relaxed mb-3 line-clamp-3">{item.summary}</p>
         )}
-
-        {item.note && (
-          <p className="text-sky-300 text-xs italic mb-3">💬 {item.note}</p>
-        )}
-
-        {item.tags && item.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-3">
-            {item.tags.map((tag) => (
-              <span key={tag} className="text-xs bg-white/5 text-white/40 px-2 py-0.5 rounded-full">
-                #{tag}
+        <div className="p-4">
+          <div className="flex items-start justify-between gap-2 mb-2">
+            <div className="flex gap-2 flex-wrap">
+              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${platformColor}`}>
+                {item.platform}
               </span>
-            ))}
+              <span
+                className="text-xs px-2 py-0.5 rounded-full text-white/50"
+                style={{ background: "rgba(255,255,255,0.05)" }}
+              >
+                {CATEGORY_ICONS[item.category]} {item.category}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <span className="text-white/20 text-xs">{timeStr}</span>
+              <button
+                onClick={() => setConfirm(true)}
+                className="text-white/20 hover:text-red-400 transition-colors text-lg leading-none"
+              >
+                ×
+              </button>
+            </div>
           </div>
-        )}
 
-        <div className="flex flex-wrap gap-3">
-          <a
-            href={item.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sky-400 text-xs hover:text-sky-300 transition-colors"
-          >
-            開啟原始連結 →
-          </a>
-          {item.location && (
+          <h2 className="font-semibold text-white text-sm leading-snug mb-1 line-clamp-2">
+            {item.title || item.url}
+          </h2>
+
+          {item.summary && (
+            <p className="text-white/50 text-xs leading-relaxed mb-3 line-clamp-3">{item.summary}</p>
+          )}
+
+          {item.note && (
+            <p className="text-cyan-300 text-xs italic mb-3">💬 {item.note}</p>
+          )}
+
+          {item.tags && item.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-3">
+              {item.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="text-xs text-white/40 px-2 py-0.5 rounded-full"
+                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <div className="flex flex-wrap gap-3">
             <a
-              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}`}
+              href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-green-400 text-xs hover:text-green-300 transition-colors"
+              className="text-cyan-400 text-xs hover:text-cyan-300 transition-colors"
             >
-              📍 {item.location}
+              開啟原始連結 →
             </a>
-          )}
+            {item.location && (
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-green-400 text-xs hover:text-green-300 transition-colors"
+              >
+                📍 {item.location}
+              </a>
+            )}
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 }
