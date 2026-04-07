@@ -231,12 +231,17 @@ function ItemCard({ item, onDelete }: { item: Item; onDelete: (id: string) => vo
 
     <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-colors">
       {item.thumbnail && (
-        <img
-          src={item.thumbnail}
-          alt={item.title}
-          className="w-full h-44 object-cover"
-          onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-        />
+        <div className="w-full h-44 bg-white/[0.06]">
+          <img
+            src={item.thumbnail}
+            alt={item.title}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              const parent = (e.target as HTMLImageElement).parentElement;
+              if (parent) parent.style.display = "none";
+            }}
+          />
+        </div>
       )}
       <div className="p-4">
         <div className="flex items-start justify-between gap-2 mb-2">
