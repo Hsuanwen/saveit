@@ -191,6 +191,7 @@ export default function Home() {
 function ItemCard({ item, onDelete }: { item: Item; onDelete: (id: string) => void }) {
   const platformColor = PLATFORM_COLORS[item.platform] || PLATFORM_COLORS["網頁"];
   const [confirm, setConfirm] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   const timeStr = new Date(item.created_at).toLocaleTimeString("zh-TW", {
     hour: "2-digit",
@@ -231,11 +232,12 @@ function ItemCard({ item, onDelete }: { item: Item; onDelete: (id: string) => vo
 
     <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-colors">
       {item.thumbnail && (
-        <div className="w-full h-44 bg-white/[0.06]">
+        <div className={`w-full h-44 bg-white/[0.06] ${imgLoaded ? "" : "hidden"}`}>
           <img
             src={item.thumbnail}
             alt={item.title}
             className="w-full h-full object-cover"
+            onLoad={() => setImgLoaded(true)}
             onError={(e) => {
               const parent = (e.target as HTMLImageElement).parentElement;
               if (parent) parent.style.display = "none";
