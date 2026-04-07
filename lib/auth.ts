@@ -20,7 +20,7 @@ export async function validateSession(sessionId: string): Promise<SessionUser | 
 
     const { data: session } = await supabase
       .from("sessions")
-      .select("id, user_id, last_active")
+      .select("id, last_active, users(id, username)")
       .eq("id", sessionId)
       .single();
 
@@ -32,16 +32,11 @@ export async function validateSession(sessionId: string): Promise<SessionUser | 
       return null;
     }
 
-    const { data: user } = await supabase
-      .from("users")
-      .select("id, username")
-      .eq("id", session.user_id)
-      .single();
-
+    const user = Array.isArray(session.users) ? session.users[0] : session.users;
     if (!user) return null;
 
-    // 更新最後活躍時間
-    await supabase
+    // 背景更新最後活躍時間，不阻塞回應
+    supabase
       .from("sessions")
       .update({ last_active: new Date().toISOString() })
       .eq("id", sessionId);
