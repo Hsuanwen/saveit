@@ -41,6 +41,7 @@ export default function Home() {
   const [collapsedDates, setCollapsedDates] = useState<Set<string>>(new Set());
   const [username, setUsername] = useState("");
   const [confirmLogout, setConfirmLogout] = useState(false);
+  const [showFilterMenu, setShowFilterMenu] = useState(false);
 
   useEffect(() => {
     fetch("/api/auth/me").then((r) => r.json()).then((u) => { if (u?.username) setUsername(u.username); });
@@ -145,40 +146,9 @@ export default function Home() {
 
       <div className="relative max-w-2xl mx-auto px-4 pb-36" style={{ zIndex: 1 }}>
         {/* Header */}
-        <div>
-          <div className="pt-6 pb-4">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-2xl font-bold text-white">我的收藏庫</h1>
-              {username && <p className="text-white/30 text-xs mt-0.5">@{username}</p>}
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setConfirmLogout(true)}
-                className="text-white/60 hover:text-white text-xs px-3 py-2 rounded-full transition-all duration-200 hover:scale-105"
-                style={{
-                  background: "rgba(255,255,255,0.07)",
-                  border: "1px solid rgba(255,255,255,0.11)",
-                  backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
-                }}
-              >
-                登出
-              </button>
-              <Link
-                href="/add"
-                className="text-white px-4 py-2 rounded-full text-sm font-medium transition-all"
-                style={{
-                  background: "linear-gradient(135deg, #0891b2, #06b6d4)",
-                  boxShadow: "0 0 16px rgba(6,182,212,0.35)",
-                }}
-              >
-                + 新增
-              </Link>
-            </div>
-          </div>
-
-          </div>
+        <div className="pt-6 pb-2">
+          <h1 className="text-2xl font-bold text-white">我的收藏庫</h1>
+          {username && <p className="text-white/30 text-xs mt-0.5">@{username}</p>}
         </div>
 
         {loading ? (
@@ -233,13 +203,13 @@ export default function Home() {
         )}
       </div>
 
-      {/* 底部分類導覽列 */}
+      {/* 底部列 */}
       <div
         className="fixed bottom-0 left-0 right-0 z-20 px-4 pb-6 pt-3"
         style={{
           backdropFilter: "blur(24px)",
           WebkitBackdropFilter: "blur(24px)",
-          background: "linear-gradient(to top, rgba(3,10,13,0.9) 60%, transparent)",
+          background: "linear-gradient(to top, rgba(3,10,13,0.92) 60%, transparent)",
         }}
       >
         <div className="max-w-2xl mx-auto space-y-2">
@@ -250,40 +220,82 @@ export default function Home() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-200"
-            style={{
-              background: "rgba(255,255,255,0.08)",
-              border: "1px solid rgba(255,255,255,0.12)",
-            }}
-            onFocus={(e) => {
-              e.target.style.border = "1px solid rgba(6,182,212,0.5)";
-              e.target.style.boxShadow = "0 0 0 3px rgba(6,182,212,0.10)";
-            }}
-            onBlur={(e) => {
-              e.target.style.border = "1px solid rgba(255,255,255,0.12)";
-              e.target.style.boxShadow = "none";
-            }}
+            style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}
+            onFocus={(e) => { e.target.style.border = "1px solid rgba(6,182,212,0.5)"; e.target.style.boxShadow = "0 0 0 3px rgba(6,182,212,0.10)"; }}
+            onBlur={(e) => { e.target.style.border = "1px solid rgba(255,255,255,0.12)"; e.target.style.boxShadow = "none"; }}
           />
-          {/* 分類列 */}
-          <div className="flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden">
-            {["全部", ...CATEGORIES].map((cat) => (
+
+          {/* 操作列：篩選（左）+ 登出/新增（右） */}
+          <div className="flex items-center justify-between">
+            {/* 篩選按鈕 */}
+            <div className="relative">
               <button
-                key={cat}
-                onClick={() => setFilter(cat)}
-                className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-2xl text-xs font-medium transition-all duration-200"
-                style={filter === cat ? {
-                  background: "linear-gradient(135deg, #0891b2, #06b6d4)",
-                  boxShadow: "0 0 14px rgba(6,182,212,0.35)",
-                  color: "white",
-                } : {
-                  background: "rgba(255,255,255,0.07)",
-                  border: "1px solid rgba(255,255,255,0.10)",
-                  color: "rgba(255,255,255,0.55)",
+                onClick={() => setShowFilterMenu((v) => !v)}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-medium transition-all duration-200"
+                style={{
+                  background: filter !== "全部"
+                    ? "linear-gradient(135deg, #0891b2, #06b6d4)"
+                    : "rgba(255,255,255,0.08)",
+                  border: filter !== "全部" ? "none" : "1px solid rgba(255,255,255,0.12)",
+                  boxShadow: filter !== "全部" ? "0 0 14px rgba(6,182,212,0.35)" : "none",
+                  color: filter !== "全部" ? "white" : "rgba(255,255,255,0.6)",
                 }}
               >
-                {cat !== "全部" && <span>{CATEGORY_ICONS[cat]}</span>}
-                {cat}
+                <span>{filter !== "全部" ? CATEGORY_ICONS[filter] : "☰"}</span>
+                <span>{filter}</span>
+                <span style={{ fontSize: "10px", opacity: 0.7 }}>{showFilterMenu ? "▾" : "▸"}</span>
               </button>
-            ))}
+
+              {/* 垂直分類選單 */}
+              {showFilterMenu && (
+                <div
+                  className="absolute bottom-full left-0 mb-2 rounded-2xl overflow-hidden"
+                  style={{
+                    background: "rgba(8,25,32,0.97)",
+                    backdropFilter: "blur(20px)",
+                    WebkitBackdropFilter: "blur(20px)",
+                    border: "1px solid rgba(255,255,255,0.10)",
+                    boxShadow: "0 -8px 32px rgba(0,0,0,0.5)",
+                    minWidth: "140px",
+                  }}
+                >
+                  {["全部", ...CATEGORIES].map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => { setFilter(cat); setShowFilterMenu(false); }}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-sm transition-all duration-150 text-left"
+                      style={{
+                        color: filter === cat ? "#22d3ee" : "rgba(255,255,255,0.65)",
+                        background: filter === cat ? "rgba(6,182,212,0.10)" : "transparent",
+                        borderBottom: "1px solid rgba(255,255,255,0.05)",
+                      }}
+                    >
+                      <span>{cat !== "全部" ? CATEGORY_ICONS[cat] : "🗂️"}</span>
+                      <span>{cat}</span>
+                      {filter === cat && <span className="ml-auto text-xs">✓</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* 登出 + 新增 */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setConfirmLogout(true)}
+                className="text-white/60 hover:text-white text-xs px-3 py-2.5 rounded-full transition-all duration-200"
+                style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.11)" }}
+              >
+                登出
+              </button>
+              <Link
+                href="/add"
+                className="text-white px-4 py-2.5 rounded-full text-sm font-medium transition-all"
+                style={{ background: "linear-gradient(135deg, #0891b2, #06b6d4)", boxShadow: "0 0 16px rgba(6,182,212,0.35)" }}
+              >
+                + 新增
+              </Link>
+            </div>
           </div>
         </div>
       </div>
