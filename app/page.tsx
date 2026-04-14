@@ -145,15 +145,15 @@ export default function Home() {
 
       <div className="relative max-w-2xl mx-auto px-4 pb-24" style={{ zIndex: 1 }}>
         {/* Sticky Header */}
-        <div
-          className="sticky top-0 pt-6 pb-3 z-10"
-          style={{
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-            background: "rgba(5,18,24,0.55)",
-            borderBottom: "1px solid rgba(255,255,255,0.07)",
-          }}
-        >
+        <div className="sticky top-0 z-10">
+          <div
+            className="pt-6 pb-4"
+            style={{
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+              background: "rgba(5,18,24,0.45)",
+            }}
+          >
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-2xl font-bold text-white">我的收藏庫</h1>
@@ -225,6 +225,12 @@ export default function Home() {
               </button>
             ))}
           </div>
+          </div>
+          {/* 底部漸層淡出，消除分割感 */}
+          <div
+            className="h-4 -mx-4"
+            style={{ background: "linear-gradient(to bottom, rgba(5,18,24,0.45), transparent)" }}
+          />
         </div>
 
         {loading ? (
