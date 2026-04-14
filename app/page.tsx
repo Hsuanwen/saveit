@@ -90,12 +90,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div
-      className="min-h-screen"
-      style={{
-        background: "radial-gradient(ellipse at 70% 10%, #083a42 0%, transparent 50%), radial-gradient(ellipse at 15% 85%, #062d38 0%, transparent 45%), #030a0d",
-      }}
-    >
+    <div className="min-h-screen" style={{ background: "#030a0d" }}>
       {confirmLogout && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-6" onClick={() => setConfirmLogout(false)}>
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
@@ -134,23 +129,29 @@ export default function Home() {
           </div>
         </div>
       )}
-      {/* 背景光暈裝飾 */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      {/* 固定背景（確保 sticky header blur 到漸層而非卡片） */}
+      <div
+        className="fixed inset-0 overflow-hidden pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse at 70% 10%, #083a42 0%, transparent 50%), radial-gradient(ellipse at 15% 85%, #062d38 0%, transparent 45%), #030a0d",
+          zIndex: 0,
+        }}
+      >
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-64 opacity-15 blur-3xl"
           style={{ background: "radial-gradient(ellipse, #22d3ee 0%, transparent 70%)" }}
         />
       </div>
 
-      <div className="relative max-w-2xl mx-auto px-4 pb-24">
+      <div className="relative max-w-2xl mx-auto px-4 pb-24" style={{ zIndex: 1 }}>
         {/* Sticky Header */}
         <div
           className="sticky top-0 pt-6 pb-3 z-10"
           style={{
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
-            background: "rgba(3,10,13,0.75)",
-            borderBottom: "1px solid rgba(255,255,255,0.06)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+            background: "rgba(5,18,24,0.55)",
+            borderBottom: "1px solid rgba(255,255,255,0.07)",
           }}
         >
           <div className="flex items-center justify-between mb-4">
