@@ -146,9 +146,18 @@ export default function Home() {
 
       <div className="relative max-w-2xl mx-auto px-4 pb-36" style={{ zIndex: 1 }}>
         {/* Header */}
-        <div className="pt-6 pb-2">
-          <h1 className="text-2xl font-bold text-white">我的收藏庫</h1>
-          {username && <p className="text-white/30 text-xs mt-0.5">@{username}</p>}
+        <div className="pt-6 pb-2 flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-white">我的收藏庫</h1>
+            {username && <p className="text-white/30 text-xs mt-0.5">@{username}</p>}
+          </div>
+          <button
+            onClick={() => setConfirmLogout(true)}
+            className="text-white/50 hover:text-white/80 text-xs px-3 py-2 rounded-full transition-all duration-200 mt-1"
+            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.09)" }}
+          >
+            登出
+          </button>
         </div>
 
         {loading ? (
@@ -279,23 +288,14 @@ export default function Home() {
               )}
             </div>
 
-            {/* 登出 + 新增 */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setConfirmLogout(true)}
-                className="text-white/60 hover:text-white text-xs px-3 py-2.5 rounded-full transition-all duration-200"
-                style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.11)" }}
-              >
-                登出
-              </button>
-              <Link
-                href="/add"
-                className="text-white px-4 py-2.5 rounded-full text-sm font-medium transition-all"
-                style={{ background: "linear-gradient(135deg, #0891b2, #06b6d4)", boxShadow: "0 0 16px rgba(6,182,212,0.35)" }}
-              >
-                + 新增
-              </Link>
-            </div>
+            {/* 新增 */}
+            <Link
+              href="/add"
+              className="text-white px-4 py-2.5 rounded-full text-sm font-medium transition-all"
+              style={{ background: "linear-gradient(135deg, #0891b2, #06b6d4)", boxShadow: "0 0 16px rgba(6,182,212,0.35)" }}
+            >
+              + 新增
+            </Link>
           </div>
         </div>
       </div>
