@@ -143,17 +143,10 @@ export default function Home() {
         />
       </div>
 
-      <div className="relative max-w-2xl mx-auto px-4 pb-24" style={{ zIndex: 1 }}>
-        {/* Sticky Header */}
-        <div className="sticky top-0 z-10">
-          <div
-            className="pt-6 pb-4"
-            style={{
-              backdropFilter: "blur(24px)",
-              WebkitBackdropFilter: "blur(24px)",
-              background: "rgba(5,18,24,0.45)",
-            }}
-          >
+      <div className="relative max-w-2xl mx-auto px-4 pb-36" style={{ zIndex: 1 }}>
+        {/* Header */}
+        <div>
+          <div className="pt-6 pb-4">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-2xl font-bold text-white">我的收藏庫</h1>
@@ -185,52 +178,7 @@ export default function Home() {
             </div>
           </div>
 
-          <input
-            type="text"
-            placeholder="搜尋收藏..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-200 mb-3"
-            style={{
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.10)",
-            }}
-            onFocus={(e) => {
-              e.target.style.border = "1px solid rgba(6,182,212,0.5)";
-              e.target.style.boxShadow = "0 0 0 3px rgba(6,182,212,0.10)";
-            }}
-            onBlur={(e) => {
-              e.target.style.border = "1px solid rgba(255,255,255,0.10)";
-              e.target.style.boxShadow = "none";
-            }}
-          />
-
-          <div className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden">
-            {["全部", ...CATEGORIES].map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setFilter(cat)}
-                className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200"
-                style={filter === cat ? {
-                  background: "linear-gradient(135deg, #0891b2, #06b6d4)",
-                  boxShadow: "0 0 12px rgba(6,182,212,0.3)",
-                  color: "white",
-                } : {
-                  background: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  color: "rgba(255,255,255,0.5)",
-                }}
-              >
-                {cat !== "全部" && CATEGORY_ICONS[cat]} {cat}
-              </button>
-            ))}
           </div>
-          </div>
-          {/* 底部漸層淡出，消除分割感 */}
-          <div
-            className="h-4 -mx-4"
-            style={{ background: "linear-gradient(to bottom, rgba(5,18,24,0.45), transparent)" }}
-          />
         </div>
 
         {loading ? (
@@ -283,6 +231,61 @@ export default function Home() {
             })}
           </div>
         )}
+      </div>
+
+      {/* 底部分類導覽列 */}
+      <div
+        className="fixed bottom-0 left-0 right-0 z-20 px-4 pb-6 pt-3"
+        style={{
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          background: "linear-gradient(to top, rgba(3,10,13,0.9) 60%, transparent)",
+        }}
+      >
+        <div className="max-w-2xl mx-auto space-y-2">
+          {/* 搜尋列 */}
+          <input
+            type="text"
+            placeholder="搜尋收藏..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-200"
+            style={{
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.12)",
+            }}
+            onFocus={(e) => {
+              e.target.style.border = "1px solid rgba(6,182,212,0.5)";
+              e.target.style.boxShadow = "0 0 0 3px rgba(6,182,212,0.10)";
+            }}
+            onBlur={(e) => {
+              e.target.style.border = "1px solid rgba(255,255,255,0.12)";
+              e.target.style.boxShadow = "none";
+            }}
+          />
+          {/* 分類列 */}
+          <div className="flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden">
+            {["全部", ...CATEGORIES].map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setFilter(cat)}
+                className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-2xl text-xs font-medium transition-all duration-200"
+                style={filter === cat ? {
+                  background: "linear-gradient(135deg, #0891b2, #06b6d4)",
+                  boxShadow: "0 0 14px rgba(6,182,212,0.35)",
+                  color: "white",
+                } : {
+                  background: "rgba(255,255,255,0.07)",
+                  border: "1px solid rgba(255,255,255,0.10)",
+                  color: "rgba(255,255,255,0.55)",
+                }}
+              >
+                {cat !== "全部" && <span>{CATEGORY_ICONS[cat]}</span>}
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
